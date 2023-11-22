@@ -10,9 +10,18 @@ class ItemService {
         return this;
     }
 
+    setEmail($email) {
+        this.email = $email;
+        return this;
+    }
+
+    setPhone($phone) {
+        this.phone = $phone
+        return this;
+    }
+
     createItem() {
-        const item = new config.ItemModel({ task: this.task });
-        //console.log(item.validateSync();
+        const item = new config.ItemModel({ task: this.task, email: this.email, phone: this.phone });
         item.save()
             .then(function (result) {
             }).catch(function (err) {
