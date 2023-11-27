@@ -1,6 +1,6 @@
 import config from "../db/mongo/config.js";
 
-class ItemService {
+class ItemDbService {
     async getItems() {
         return config.ItemModel.find();
     }
@@ -40,4 +40,4 @@ class ItemService {
     }
 }
 
-export default ItemService;
+export default ItemDbService;

@@ -1,15 +1,75 @@
 import express from 'express';
 import todoController from './controllers/todoController.js';
-import cookieParser from  'cookie-parser';
 import session from 'express-session';
+import AdminJS from 'adminjs'
+import AdminJSExpress from '@adminjs/express'
+import { Database, Resource } from '@adminjs/mongoose'
+import config from "./db/mongo/config.js"
 
-const app = express();
-app.listen(3000);
+const PORT = 3000
 
-app.use(session({secret: '123456', resave: true, saveUninitialized: true}))
-app.set('view engine', 'ejs');
-app.use(express.static('./public'));
+const ITEM_MODEL = config.ItemModel
 
-todoController(app);
+const DEFAULT_ADMIN = {
+    email: 'admin@example.com',
+    password: 'password',
+}
 
-console.log('Listening port 3000');
+const authenticate = async (email, password) => {
+    if (email === DEFAULT_ADMIN.email && password === DEFAULT_ADMIN.password) {
+        return Promise.resolve(DEFAULT_ADMIN)
+    }
+    return null
+}
+
+const start = async () => {
+    AdminJS.registerAdapter({ Database, Resource });
+    const app = express();
+
+        const admin = new AdminJS({
+            //databases: [result]
+            resources: [{
+                resource: ITEM_MODEL,
+                options: {
+                    id: 'list'
+                },
+            }],
+        });
+        const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
+            admin,
+            {
+                authenticate,
+                cookieName: 'adminjs',
+                cookiePassword: 'sessionsecret',
+            },
+            null,
+            {
+                store: null,
+                resave: true,
+                saveUninitialized: true,
+                secret: 'sessionsecret',
+                cookie: {
+                    httpOnly: process.env.NODE_ENV === 'production',
+                    secure: process.env.NODE_ENV === 'production',
+                },
+                name: 'adminjs',
+            }
+        )
+
+        app.use(admin.options.rootPath, adminRouter);
+
+        app.listen(PORT, () => {
+            console.log(`AdminJS started on http://localhost:${PORT}${admin.options.rootPath}`)
+        });
+
+        app.use(session({secret: '123456', resave: true, saveUninitialized: true}))
+
+        app.set('view engine', 'ejs');
+
+        todoController(app);
+
+        app.use(express.static('./public'));
+        //adminJS.watch();
+}
+
+start();

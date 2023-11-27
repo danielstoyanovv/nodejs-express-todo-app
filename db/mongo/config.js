@@ -4,13 +4,22 @@ const db = mongoose.connect('mongodb://127.0.0.1:27017/todos');
 
 const itemSchema = new mongoose.Schema({
     task: {
-       type: String,
+        type: String,
+        required: true,
+        maxlength: 20,
+        trim: true
     },
     email: {
-        type: String
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+        maxlength: 30
     },
     phone: {
-        type: String
+        type: String,
+        required: true,
+        maxlength: 20,
     }
 
 });

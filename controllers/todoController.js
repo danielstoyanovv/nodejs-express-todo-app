@@ -1,12 +1,12 @@
 import bodyParser  from 'body-parser';
-import ItemService from "../services/itemService.js";
+import ItemDbService from "../services/itemDbService.js";
 import { check, validationResult } from 'express-validator';
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 export default function (app) {
     app.get('/todo', async function (req, res) {
-         (await (new ItemService()).getItems().then(r => {
+         (await (new ItemDbService()).getItems().then(r => {
              try {
                  if (req.session.errors != null) {
                      const errors = req.session.errors;
@@ -40,7 +40,7 @@ export default function (app) {
             const itemValue = req.body.item;
             const email = req.body.email;
             const phone = req.body.phone;
-            (new ItemService())
+            (new ItemDbService())
                 .setTask(itemValue)
                 .setEmail(email)
                 .setPhone(phone)
@@ -53,7 +53,7 @@ export default function (app) {
 
     app.delete('/todo/:item', function (req, res) {
         try {
-            (new ItemService()).deleteItem(req.params.item).then(r => {
+            (new ItemDbService()).deleteItem(req.params.item).then(r => {
                 return res.json(['deleted']);
             });
         } catch (err) {
