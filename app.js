@@ -27,7 +27,6 @@ const start = async () => {
     const app = express();
 
         const admin = new AdminJS({
-            //databases: [result]
             resources: [{
                 resource: ITEM_MODEL,
                 options: {
@@ -69,7 +68,6 @@ const start = async () => {
         todoController(app);
 
         app.use(express.static('./public'));
-        //adminJS.watch();
 }
 
 start();
