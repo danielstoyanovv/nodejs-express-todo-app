@@ -1,5 +1,5 @@
 import express from 'express';
-import todoController from './controllers/todoController.js';
+import todosController from './controllers/todosController.js';
 import session from 'express-session';
 import AdminJS from 'adminjs'
 import AdminJSExpress from '@adminjs/express'
@@ -65,7 +65,7 @@ const start = async () => {
 
         app.set('view engine', 'ejs');
 
-        todoController(app);
+        todosController(app);
 
         app.use(express.static('./public'));
 }
