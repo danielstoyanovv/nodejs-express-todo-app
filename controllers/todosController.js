@@ -5,7 +5,7 @@ import config from "../db/mongo/config.js";
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 export default function (app) {
-const ITEM_MODEL = config.ItemModel
+    const ITEM_MODEL = config.ItemModel
 
     app.get('/todos', async function (req, res) {
         ITEM_MODEL
@@ -107,7 +107,7 @@ const ITEM_MODEL = config.ItemModel
     app.delete('/todos/:id', async function (req, res) {
         try {
             const id = req.params.id
-            await config.ItemModel.deleteOne({_id: id})
+            await ITEM_MODEL.deleteOne({_id: id})
             return res.json(['deleted']);
         } catch (err) {
             console.log(err);
