@@ -42,9 +42,7 @@ export default function (app) {
             req.session.errors = errors.array()
             return res.redirect('/todos');
         }
-        const task = req.body.task;
-        const email = req.body.email;
-        const phone = req.body.phone;
+        const {task, email, phone} = req.body
         new ITEM_MODEL({ task: task, email: email, phone: phone })
             .save()
             .then(function (result) {
@@ -57,7 +55,7 @@ export default function (app) {
     });
 
     app.get("/todos/:id", async function (req, res) {
-        const id = req.params.id
+        const { id } = req.params;
         const item = await ITEM_MODEL
             .findById(id)
             .exec()
@@ -82,15 +80,13 @@ export default function (app) {
         check('phone', 'Phone length is between 10 and 20 digits').isLength({ min: 10,  max: 20 })
             .isNumeric().withMessage('Phone should be only digits')
     ],  function (req, res) {
-        const id = req.params.id
+        const { id } = req.params;
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             req.session.errors = errors.array()
             return res.redirect('/todos/' + id)
         }
-        const task = req.body.task;
-        const email = req.body.email;
-        const phone = req.body.phone;
+        const {task, email, phone} = req.body
 
         ITEM_MODEL.findByIdAndUpdate(id, {
             task: task,
@@ -106,7 +102,7 @@ export default function (app) {
 
     app.delete('/todos/:id', async function (req, res) {
         try {
-            const id = req.params.id
+            const { id } = req.params
             await ITEM_MODEL.deleteOne({_id: id})
             return res.json(['deleted']);
         } catch (err) {
